@@ -42,5 +42,15 @@ api_version = "2026-01"
 [pos]
 embedded = false
 
+# App proxy — serves the storefront FAQ surface under the shop's own
+# domain at /apps/faq (full page, category JSON, vote + view endpoints).
+# AppApprove's deploy overwrites `url` with the live Worker URL; the
+# /apps/faq path segment matches prefix + subpath so requests land on
+# the app/routes/apps.faq.* routes.
+[app_proxy]
+url = "https://perf-probe-0521.appapprove.app/apps/faq"
+subpath = "faq"
+prefix = "apps"
+
 [build]
 include_config_on_deploy = true

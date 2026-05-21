@@ -1,0 +1,72 @@
+{% comment %}
+  FAQ accordion block — renders one FAQ category as an accordion.
+
+  Storefront-safe rules (keep when editing):
+    * Content is fetched from the app proxy (/apps/faq/category/<slug>) by
+      assets/faq-accordion.js — Liquid cannot read the app database.
+    * <noscript> gives a meaningful, server-rendered fallback link.
+    * No localStorage / sessionStorage writes — runtime state only.
+    * Colors + fonts come from theme CSS variables (see faq-accordion.css).
+{% endcomment %}
+
+{{ 'faq-accordion.css' | asset_url | stylesheet_tag }}
+
+<div
+  class="faq-accordion"
+  data-faq-accordion
+  data-category="{{ block.settings.category | escape }}"
+  data-expand-first="{{ block.settings.expand_first }}"
+  data-show-votes="{{ block.settings.show_votes }}"
+  data-block-id="{{ block.id }}"
+  {{ block.shopify_attributes }}
+>
+  {%- if block.settings.heading != blank -%}
+    <h2 class="faq-accordion__heading">{{ block.settings.heading | escape }}</h2>
+  {%- endif -%}
+
+  <p class="faq-accordion__status" data-faq-status role="status" aria-live="polite">
+    Loading frequently asked questions…
+  </p>
+  <div class="faq-accordion__list" data-faq-list></div>
+
+  <noscript>
+    <a class="faq-accordion__fallback" href="/apps/faq">
+      View our frequently asked questions
+    </a>
+  </noscript>
+</div>
+
+{{ 'faq-accordion.js' | asset_url | script_tag }}
+
+{% schema %}
+{
+  "name": "t:extension.block_name",
+  "target": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "t:settings.heading.label",
+      "default": "t:settings.heading.default"
+    },
+    {
+      "type": "text",
+      "id": "category",
+      "label": "t:settings.category.label",
+      "info": "t:settings.category.info"
+    },
+    {
+      "type": "checkbox",
+      "id": "expand_first",
+      "label": "t:settings.expand_first.label",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_votes",
+      "label": "t:settings.show_votes.label",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

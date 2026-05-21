@@ -1,0 +1,22 @@
+{
+  "extension": {
+    "name": "FAQ accordion",
+    "block_name": "FAQ accordion"
+  },
+  "settings": {
+    "heading": {
+      "label": "Heading",
+      "default": "Frequently asked questions"
+    },
+    "category": {
+      "label": "FAQ category slug",
+      "info": "Enter a category slug from the app's FAQ admin. Leave blank to use the default category."
+    },
+    "expand_first": {
+      "label": "Open the first question by default"
+    },
+    "show_votes": {
+      "label": "Show helpful / not helpful buttons"
+    }
+  }
+}

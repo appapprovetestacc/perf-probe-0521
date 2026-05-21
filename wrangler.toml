@@ -37,6 +37,16 @@ directory = "./build/client"
 [alias]
 "virtual:remix/server-build" = "./build/server"
 
+# FAQ blueprint — Cloudflare D1 database (categories, entries, votes,
+# daily view analytics, per-shop settings). AppApprove's deploy pipeline
+# auto-creates the database and patches `database_id` with the real UUID
+# on first deploy; `database_id = "pending"` is a non-UUID placeholder,
+# which the pipeline detects + replaces (see deploy.yml "Provision CF D1").
+[[d1_databases]]
+binding = "D1"
+database_name = "perf-probe-0521-faq"
+database_id = "pending"
+
 # AppApprove provisions custom routes / KV bindings / secrets at deploy
 # time. Don't edit the [vars] section by hand — use the AppApprove dashboard.
 [vars]

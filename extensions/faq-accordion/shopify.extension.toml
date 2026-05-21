@@ -1,0 +1,19 @@
+# FAQ accordion — theme app extension. The merchant adds the block to any
+# page section via the theme editor and renders one FAQ category as an
+# accordion. The block fetches its content from the app proxy
+# (/apps/faq/category/<slug>), so network_access is required.
+
+api_version = "2025-10"
+
+[[extensions]]
+type = "theme"
+name = "t:extension.name"
+handle = "faq-accordion"
+
+  [extensions.capabilities]
+  # The block's JavaScript fetches FAQ content from the app proxy on the
+  # storefront's own domain — Liquid cannot read the app's database, so
+  # this is the only way to render dynamic FAQ data.
+  network_access = true
+  block_progress = false
+  api_access = false

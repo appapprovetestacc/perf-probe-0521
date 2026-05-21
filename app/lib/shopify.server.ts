@@ -335,6 +335,38 @@ export async function verifyWebhookHmac(
   return mismatch === 0;
 }
 
+// App-proxy request signature verification. Shopify signs every proxied
+// storefront request (GET + POST) with a `signature` query param: the
+// HMAC-SHA256 (hex) of the remaining query params, sorted by key, each
+// rendered as `key=value` (repeat keys joined by `,`) and concatenated
+// with no separator.
+// Spec: https://shopify.dev/docs/apps/build/online-store/app-proxies#calculate-a-digital-signature
+export async function verifyAppProxySignature(
+  url: URL,
+  apiSecret: string,
+): Promise<boolean> {
+  const signature = url.searchParams.get("signature");
+  if (!signature) return false;
+  const groups = new Map<string, string[]>();
+  for (const [k, v] of url.searchParams.entries()) {
+    if (k === "signature") continue;
+    const arr = groups.get(k) ?? [];
+    arr.push(v);
+    groups.set(k, arr);
+  }
+  const message = Array.from(groups.keys())
+    .sort()
+    .map((k) => `${k}=${groups.get(k)!.join(",")}`)
+    .join("");
+  const expected = await hmacHex(message, apiSecret);
+  if (expected.length !== signature.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < expected.length; i++) {
+    mismatch |= expected.charCodeAt(i) ^ signature.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
 // Phase 7 E1 — preview-mode sentinel + bypass. Returned by both
 // authenticate.admin and authenticate.public when:
 //   1. env.PREVIEW_MODE === "1" (build-time flag, baked only into the
@@ -364,13 +396,12 @@ function isPreviewModeRequest(request: Request, context: AppLoadContext): boolea
 function previewModeAdminResult(): AdminAuthResult {
   const now = Math.floor(Date.now() / 1000);
   return {
+    // Shape matches OfflineSession ({ shop, accessToken, scope, storedAt }).
     session: {
-      id: "preview|" + PREVIEW_SHOP_DOMAIN,
       shop: PREVIEW_SHOP_DOMAIN,
-      state: "preview-mode",
-      isOnline: false,
       accessToken: "preview-mode-no-real-token",
       scope: "preview",
+      storedAt: now * 1000,
     },
     sessionToken: {
       iss: "https://" + PREVIEW_SHOP_DOMAIN + "/admin",

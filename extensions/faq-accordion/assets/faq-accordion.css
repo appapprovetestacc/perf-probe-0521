@@ -1,0 +1,142 @@
+/* FAQ accordion block. Colors + fonts use theme CSS variables only — when
+   a variable is undefined the property degrades to inherited / currentColor
+   so the block stays readable on any theme. Mobile-first. */
+
+.faq-accordion {
+  font-family: var(--font-body-family);
+  color: var(--color-foreground);
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 1rem 0;
+}
+
+.faq-accordion__heading {
+  font-family: var(--font-heading-family);
+  font-size: 1.4rem;
+  margin: 0 0 0.75rem;
+}
+
+.faq-accordion__status {
+  margin: 0;
+  padding: 0.75rem 0;
+  opacity: 0.7;
+  font-size: 0.9rem;
+}
+
+.faq-accordion__item {
+  border-bottom: 1px solid var(--color-foreground);
+}
+
+.faq-accordion__item:first-child {
+  border-top: 1px solid var(--color-foreground);
+}
+
+.faq-accordion__q {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 0.25rem;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+
+.faq-accordion__q::-webkit-details-marker {
+  display: none;
+}
+
+.faq-accordion__q:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+.faq-accordion__icon {
+  flex: none;
+  width: 0.85rem;
+  height: 0.85rem;
+  position: relative;
+}
+
+.faq-accordion__icon::before,
+.faq-accordion__icon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: currentColor;
+  transform: translate(-50%, -50%);
+}
+
+.faq-accordion__icon::before {
+  width: 0.85rem;
+  height: 2px;
+}
+
+.faq-accordion__icon::after {
+  width: 2px;
+  height: 0.85rem;
+}
+
+.faq-accordion__item[open] .faq-accordion__icon::after {
+  display: none;
+}
+
+.faq-accordion__a {
+  padding: 0 0.25rem 1rem;
+}
+
+.faq-accordion__answer a {
+  color: inherit;
+}
+
+.faq-accordion__answer ul,
+.faq-accordion__answer ol {
+  padding-left: 1.4rem;
+}
+
+.faq-accordion__vote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--color-foreground);
+}
+
+.faq-accordion__vote-label {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.faq-accordion__vote-btn {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.3rem 0.8rem;
+  cursor: pointer;
+  border: 1px solid var(--color-foreground);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+}
+
+.faq-accordion__vote-btn[aria-pressed="true"] {
+  background: var(--color-button);
+  color: var(--color-button-text);
+  border-color: var(--color-button);
+}
+
+.faq-accordion__vote-btn[disabled] {
+  opacity: 0.55;
+  cursor: default;
+}
+
+.faq-accordion__vote-msg {
+  font-size: 0.82rem;
+  opacity: 0.8;
+}
+
+.faq-accordion__fallback {
+  color: inherit;
+}
