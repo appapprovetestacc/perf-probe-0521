@@ -425,13 +425,18 @@ async function authenticateAdmin(
   if (isPreviewModeRequest(request, context)) {
     return previewModeAdminResult();
   }
+  // App Bridge sends the token in the Authorization: Bearer header on subsequent
+  // requests, but on the very first embedded load (before App Bridge has booted)
+  // Shopify delivers it as the `id_token` query parameter instead.
   const auth = request.headers.get("authorization") ?? "";
   const m = auth.match(/^Bearer (.+)$/i);
-  if (!m) {
+  const url = new URL(request.url);
+  const rawToken = m ? m[1]! : (url.searchParams.get("id_token") ?? "");
+  if (!rawToken) {
     throw new Response("Missing session token", { status: 401 });
   }
   const cfg = shopifyApi(context);
-  const sessionToken = await verifySessionToken(m[1]!, cfg.apiKey, cfg.apiSecret);
+  const sessionToken = await verifySessionToken(rawToken, cfg.apiKey, cfg.apiSecret);
   // sessionToken.dest is the shop URL like "https://x.myshopify.com"
   const shop = new URL(sessionToken.dest).hostname;
   const session = await loadOfflineSession(context, shop);
