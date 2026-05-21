@@ -1,0 +1,18 @@
+# Cursor project rules — see CLAUDE.md for full context.
+
+This is a Cloudflare Workers + Remix Shopify app scaffolded by AppApprove.
+Blueprint: FAQ.
+
+Conventions:
+- Polaris React + App Bridge React, no raw HTML/CSS
+- Every admin route uses <Page> with title + primaryAction
+- Currency stored as integer cents
+- Drizzle migrations need a meta/_journal.json entry for every new SQL file
+- No Vite ?raw imports for SQL/text — inline as TS const strings
+
+Forbidden:
+- Modifying deploy.yml structure or wrangler.toml schema
+- Replacing AppApprove scaffold/auth helpers (extend them instead)
+- Breaking pnpm tsc + pnpm test (both must stay green for deploy)
+
+See CLAUDE.md for architecture, domain model, iteration cookbook, and BYOK env vars.
